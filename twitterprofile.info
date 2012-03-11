@@ -1,0 +1,6 @@
+;$Id$
+name = Twitter Profile
+description = Módulo que lista os ultimos tweets do usuário.
+core = 6.x
+package = Twitter
+version = 6.x-1.0 

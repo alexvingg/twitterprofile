@@ -1,0 +1,183 @@
+<?php
+
+function twitterprofile_menu() {
+    $menu['admin/settings/twitterprofile'] = array(
+       'title' => 'Administração Twitter Profile',
+       'description' =>'',
+       'page callback' => 'drupal_get_form',
+       'page arguments' => array('twitterprofile_admin'),
+       'access arguments' => array('access administration pages'),
+       'type' => MENU_NORMAL_ITEM
+    );
+    return $menu;
+} 
+
+function twitterprofile_admin(){
+    
+    drupal_add_js(drupal_get_path('module', 'twitterprofile') . "/js/colorpicker.js");
+    drupal_add_js(drupal_get_path('module', 'twitterprofile') . "/js/color.js");
+    drupal_add_css(drupal_get_path('module', 'twitterprofile') . "/css/colorpicker.css");
+    
+    $form = array();
+        $form['cores'] = array(
+      '#type' => 'fieldset', 
+      '#title' => t('Cores'), 
+      '#weight' => 2, 
+      '#collapsible' => FALSE, 
+      '#collapsed' => FALSE,
+    );
+   
+    $form['confg'] = array(
+      '#type' => 'fieldset', 
+      '#title' => t('Configurações'), 
+      '#weight' => 1, 
+      '#collapsible' => FALSE, 
+      '#collapsed' => FALSE,
+    );
+     
+    
+    $form['confg']['username'] = array(
+        '#type'=>'textfield',
+        '#title'=>'Conta Usuário',
+        '#size'=> '20',
+        '#default_value'=>''.  variable_get("username",array()).''
+    );
+    
+    $form['confg']['number_of_tweets'] = array(
+        '#type'=>'textfield',
+        '#title'=>'Número de Tweets',
+        '#size'=> '10',
+        '#default_value'=>''.  variable_get("number_of_tweets",array()).''
+    );
+    $form['confg']['width'] = array(
+        '#type'=>'textfield',
+        '#title'=>'Largura',
+        '#size'=> '10',
+        '#default_value'=>''.  variable_get("width",array()).''
+    );
+    
+    $form['confg']['height'] = array(
+        '#type'=>'textfield',
+        '#title'=>'Altura',
+        '#size'=> '10',
+        '#default_value'=>''.  variable_get("height",array()).''
+    );
+   
+    
+    $form['cores']['shell_background'] = array(
+        '#type'=>'textfield',
+        '#title'=>'Cor de Fundo',
+        '#size'=> '10',
+        '#default_value'=>''.  variable_get("shell_background",array()).''
+    );
+    
+    $form['cores']['shell_text'] = array(
+        '#type'=>'textfield',
+        '#title'=>'Cor do Texto',
+        '#size'=> '10',
+        '#default_value'=>''.  variable_get("shell_text",array()).''
+    );
+    
+    $form['cores']['tweet_background'] = array(
+        '#type'=>'textfield',
+        '#title'=>'Cor de fundo dos Tweets',
+        '#size'=> '10',
+        '#default_value'=>''.  variable_get("tweet_background",array()).''
+    );
+    
+    $form['cores']['tweet_text'] = array(
+        '#type'=>'textfield',
+        '#title'=>'Cor do texto dos Tweets',
+        '#size'=> '10',
+        '#default_value'=>''.  variable_get("tweet_text",array()).''
+    );
+      
+    
+    $form['submit'] = array(
+        '#type'=>'submit',
+        '#value'=>'Salvar',
+        '#weight'=> 3,
+        '#submit'=>array('twitterprofile_admin_submit')
+    );
+    
+    return $form;  
+}
+
+function twitterprofile_admin_submit($form,$state) {
+        //Conta
+    variable_set("username", $state['values']['username']);
+    //Numéro de Tweets apresentados
+    variable_set("number_of_tweets", $state['values']['number_of_tweets']);
+    //Fundo do twitter
+    variable_set("shell_background", $state['values']['shell_background']);
+    //Textos na área do twitter
+    variable_set("shell_text", $state['values']['shell_text']);
+    //Fundo da área dos tweets
+    variable_set("tweet_background", $state['values']['tweet_background']);
+    //Texto dos tweets
+    variable_set("tweet_text", $state['values']['tweet_text']);
+    //Links
+    variable_set("links", $state['values']['links']);
+    
+    //Width
+    variable_set("width", $state['values']['width']);
+    //Height
+    variable_set("height", $state['values']['height']);
+    
+    drupal_set_message("Salvo com sucesso", 'status');
+} 
+
+function twitterprofile_block($op = 'list', $delta = 0, $edit = array()) {
+  if ($op == 'list') {
+    $blocks[0] = array(
+      'info' => t('TwitterProfile'), 
+      'weight' => 0, 
+      'status' => 0, 
+      'region' => 'foot',
+    );
+    return $blocks;
+  }
+  else if ($op == 'view') {
+        $block = array(
+          'subject' => t('Twitter'), 
+          'content' => twitterprofile_display_block_1(),
+        );
+
+    return $block;
+  }
+}
+
+function twitterprofile_display_block_1(){
+    $var = "
+        <script src=\"http://widgets.twimg.com/j/2/widget.js\"></script>
+<script>
+new TWTR.Widget({
+  version: 2,
+  type: 'profile',
+  rpp: ".variable_get("number_of_tweets",array()).",
+  interval: 30000,
+  width: ".variable_get("width",array()).",
+  height: ".variable_get("height",array()).",
+  theme: {
+    shell: {
+      background: '#".variable_get("shell_background",array())."',
+      color: '#".variable_get("shell_text",array())."'
+    },
+    tweets: {
+      background: '#".variable_get("tweet_background",array())."',
+      color: '#".variable_get("tweet_text",array())."',
+      links: '#".variable_get("links",array())."'
+    }
+  },
+  features: {
+    scrollbar: false,
+    loop: false,
+    live: false,
+    behavior: 'all'
+  }
+}).render().setUser('".variable_get("username",array())."').start();
+</script>
+";
+    
+    return $var;
+}

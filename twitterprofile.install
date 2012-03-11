@@ -1,0 +1,47 @@
+<?php
+function twitterprofile_install() {
+    //Conta
+    variable_set("username", "twitter");
+    //Numéro de Tweets apresentados
+    variable_set("number_of_tweets", "4");
+    //Fundo do twitter
+    variable_set("shell_background", "333333");
+    //Textos na área do twitter
+    variable_set("shell_text", "ffffff");
+    //Fundo da área dos tweets
+    variable_set("tweet_background", "000000");
+    //Texto dos tweets
+    variable_set("tweet_text", "ffffff");
+    //Links
+    variable_set("links", "4aed05");
+    
+    //Width
+    variable_set("width", "250");
+    //Height
+    variable_set("height", "300");
+    
+    
+}
+
+function twitterprofile_uninstall() {
+    //Conta
+    variable_del("username");
+    //Numéro de Tweets apresentados
+    variable_del("number_of_tweets");
+    //Fundo do twitter
+    variable_del("shell_background");
+    //Textos na área do twitter
+    variable_del("shell_text");
+    //Fundo da área dos tweets
+    variable_del("tweet_background");
+    //Texto dos tweets
+    variable_del("tweet_text");
+    //Links
+    variable_del("links");
+    //Width
+    variable_del("width");
+    //Height
+    variable_del("height");
+}
+
+?> 
